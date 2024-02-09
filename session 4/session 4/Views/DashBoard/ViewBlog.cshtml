@@ -1,0 +1,60 @@
+﻿@model List<Blog>
+@{
+    Layout = "_DashBoardLayout";
+}
+<div class="dash-content">
+    <div class="overview">
+        <div class="title">
+            <i class="uil uil-tachometer-fast-alt"></i>
+            <span class="text">All Blogs</span>
+        </div>
+    </div>
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td class="table-light">id</td>
+                    <td class="table-light">Name</td>
+                    <td class="table-light">Description</td>
+                    <td class="table-light">Type</td>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var obj in Model.OrderBy(e => e.Id))
+                    {
+
+                        <tr>
+                            
+                            <td>@obj.Id</td>
+                            <td>@obj.Name</td>
+                            <td>@obj.Description</td>
+                            <td>@obj.blogType.Name</td>
+                        
+                   
+                    <td>
+
+
+                                <a asp-action="EditBlog" asp-controller="DashBoard" asp-route-id="@obj.Id" class="btn btn-success" role="button">
+                            <span class="material-symbols-outlined">
+                                edit
+                            </span>
+                        </a>
+                                <a asp-action="DeleteBlog" asp-controller="DashBoard" asp-route-id="@obj.Id" class="btn btn-danger " role="button">
+                            <span class="material-symbols-outlined">
+                                delete
+                            </span>
+                        </a>
+                    </td>
+
+                </tr>}}
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+</div>

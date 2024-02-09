@@ -1,0 +1,49 @@
+﻿@model Blog;
+@{
+    Layout = "_DashBoardLayout";
+}
+<div class="overview">
+    <div class="title">
+        <i class="uil uil-tachometer-fast-alt"></i>
+        <span class="text">Edit Blog</span>
+    </div>
+    <div>
+        <form asp-action="EditBlog" method="post" class="row">
+            <div class="mb-3">
+                <input asp-for="Id" hidden />
+                <label asp-for="Name" class="form-label">Blog Name</label>
+                <input asp-for="Name"
+                       class="form-control"
+                       placeholder="" />
+
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Product Description</label>
+                <textarea asp-for="Description"
+                          class="form-control"
+                          placeholder=""></textarea>
+            </div>
+            <div class="mb-3 col-lg-6">
+                <label asp-for="blogType.Id" class="form-label">company</label>
+                <select class="form-select "
+                        asp-for="blogType.Id"
+                       >
+                    <option selected>Select one</option>
+                    <option value="1">Comedy</option>
+                    <option value="2">Romantic</option>
+                    <option value="3">Action</option>
+                </select>
+            </div>
+
+            <div class="mb-3 col-lg-6">
+
+              
+                <div class="col-lg-12 d-flex justify-content-center  ">
+
+                    <button type="submit" class="btn btn-success">Edit</button>
+
+                </div>
+        </form>
+
+    </div>
+</div>
