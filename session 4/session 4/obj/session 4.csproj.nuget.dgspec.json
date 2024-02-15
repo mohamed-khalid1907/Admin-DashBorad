@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\mvc\\session 4\\session 4\\session 4.csproj": {}
+    "F:\\mvc\\Admin-DashBorad\\session 4\\session 4\\session 4.csproj": {}
   },
   "projects": {
-    "F:\\mvc\\session 4\\session 4\\session 4.csproj": {
+    "F:\\mvc\\Admin-DashBorad\\session 4\\session 4\\session 4.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\mvc\\session 4\\session 4\\session 4.csproj",
+        "projectUniqueName": "F:\\mvc\\Admin-DashBorad\\session 4\\session 4\\session 4.csproj",
         "projectName": "session 4",
-        "projectPath": "F:\\mvc\\session 4\\session 4\\session 4.csproj",
+        "projectPath": "F:\\mvc\\Admin-DashBorad\\session 4\\session 4\\session 4.csproj",
         "packagesPath": "C:\\Users\\hp zbook\\.nuget\\packages\\",
-        "outputPath": "F:\\mvc\\session 4\\session 4\\obj\\",
+        "outputPath": "F:\\mvc\\Admin-DashBorad\\session 4\\session 4\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\hp zbook\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,6 +39,22 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

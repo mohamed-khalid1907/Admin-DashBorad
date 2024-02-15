@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using session_4.Data;
 using session_4.Models;
 namespace session_4.Controllers
 {
@@ -6,7 +8,11 @@ namespace session_4.Controllers
     {
        private static List<Blog> blogs = new List<Blog>();
        private static List<Product> products = new List<Product>();
-        
+        private readonly ApplicationDbContext _db;
+        public DashBoardController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
         public IActionResult Index()
         {
             return View();
@@ -18,29 +24,24 @@ namespace session_4.Controllers
         [HttpPost]
         public IActionResult CreateProduct(Product product)
         {
-            int max = 0;
-            products.ForEach(b =>
-            {
-                if (b.Id > max)
+            
+                if(product.CompId == 1)
                 {
-                    max = b.Id;
+                    product.company = _db.companies.FirstOrDefault(p=>p.Id==1);
+                }else if(product.CompId == 2)
+                {
+                    product.company = _db.companies.FirstOrDefault(p=>p.Id==2);
                 }
-            });
-            product.Id = max + 1;
-            if (product.company.Id == 1)
-            {
-                product.company.Name = "nike";
-            }
-            else
-            {
-                product.company.Name = "addidas";
-            }
-            products.Add(product);
+            
+            _db.products.Add(product);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
          public IActionResult viewproduct()
         {
-            return View(products);
+            var product = _db.products.Include(p=>p.company).ToList();
+
+            return View(product);
         } public IActionResult viewBlog()
         {
             return View(blogs);
@@ -65,22 +66,15 @@ namespace session_4.Controllers
             return RedirectToAction("viewBlog");
         }public IActionResult DeleteProduct(int?id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var b = products.FirstOrDefault(b => b.Id == id);
-            if (b == null)
-            {
-                return NotFound();   
-            }
+            var product = _db.products.Include(p => p.company).ToList();
+            Product b = product.FirstOrDefault(p=>p.Id==id);
             return View(b);
         }
         [HttpPost ]
         public IActionResult DeleteProduct(Product product)
         {
-            Product pr2 = products.FirstOrDefault(b => b.Id == product.Id);
-            products.Remove(pr2);
+            _db.products.Remove(product);
+            _db.SaveChanges();
             return RedirectToAction("viewProduct");
         }public IActionResult EditBlog(int?id)
         {
@@ -117,36 +111,21 @@ namespace session_4.Controllers
             return RedirectToAction("viewBlog");
         }public IActionResult EditProduct(int?id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var b = products.FirstOrDefault(b => b.Id == id);
-            if (b == null)
-            {
-                return NotFound();   
-            }
+            var b = _db.products.Include(p=>p.company).FirstOrDefault(p=>p.Id==id);
+            
             return View(b);
         }
         [HttpPost]
         public IActionResult EditProduct(Product product)
         {
-            Product pr2 = products.FirstOrDefault(b => b.Id == product.Id);
-            pr2.Name=product.Name;
-            pr2.Description=product.Description;
-            pr2.Price=product.Price;
-            pr2.Quantity=product.Quantity;
-            pr2.EnableSize=product.EnableSize;
-
-            if (product.company.Id == 1)
+            
+            if (product.company.Id == 1 || product.company.Id == 2)
             {
-                product.company.Name = "nike";
+                product.company = _db.companies.FirstOrDefault(p => p.Id == product.company.Id);
             }
-            else
-            {
-                product.company.Name = "addidas";
-            }
-            pr2.company = product.company;
+            
+            _db.Update(product);
+            _db.SaveChanges();
             return RedirectToAction("viewProduct");
         }public IActionResult AddBlog()
         {
