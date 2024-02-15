@@ -7,7 +7,7 @@
 namespace session_4.Migrations
 {
     /// <inheritdoc />
-    public partial class createDatabase : Migration
+    public partial class blogs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,19 @@ namespace session_4.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "types",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_types", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,6 +62,27 @@ namespace session_4.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "blogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    typeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_blogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_blogs_types_typeId",
+                        column: x => x.typeId,
+                        principalTable: "types",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "companies",
                 columns: new[] { "Id", "Name" },
@@ -57,6 +91,21 @@ namespace session_4.Migrations
                     { 1, "Niki" },
                     { 2, "Adidas" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "types",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "comedy" },
+                    { 2, "Romantic" },
+                    { 3, "Action" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_blogs_typeId",
+                table: "blogs",
+                column: "typeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_products_CompId",
@@ -68,7 +117,13 @@ namespace session_4.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "blogs");
+
+            migrationBuilder.DropTable(
                 name: "products");
+
+            migrationBuilder.DropTable(
+                name: "types");
 
             migrationBuilder.DropTable(
                 name: "companies");

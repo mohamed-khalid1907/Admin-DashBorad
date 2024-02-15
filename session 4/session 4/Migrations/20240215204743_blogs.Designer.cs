@@ -11,8 +11,8 @@ using session_4.Data;
 namespace session_4.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240215161000_createDatabase")]
-    partial class createDatabase
+    [Migration("20240215204743_blogs")]
+    partial class blogs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,66 @@ namespace session_4.Migrations
                     b.ToTable("products");
                 });
 
+            modelBuilder.Entity("session_4.Models.Blog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("typeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("typeId");
+
+                    b.ToTable("blogs");
+                });
+
+            modelBuilder.Entity("session_4.Models.BlogType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("types");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "comedy"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Romantic"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Action"
+                        });
+                });
+
             modelBuilder.Entity("session_4.Models.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -97,6 +157,17 @@ namespace session_4.Migrations
                         .IsRequired();
 
                     b.Navigation("company");
+                });
+
+            modelBuilder.Entity("session_4.Models.Blog", b =>
+                {
+                    b.HasOne("session_4.Models.BlogType", "blogType")
+                        .WithMany()
+                        .HasForeignKey("typeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("blogType");
                 });
 #pragma warning restore 612, 618
         }

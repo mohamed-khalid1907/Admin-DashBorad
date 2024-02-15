@@ -6,8 +6,6 @@ namespace session_4.Controllers
 {
     public class DashBoardController : Controller
     {
-       private static List<Blog> blogs = new List<Blog>();
-       private static List<Product> products = new List<Product>();
         private readonly ApplicationDbContext _db;
         public DashBoardController(ApplicationDbContext db)
         {
@@ -44,14 +42,17 @@ namespace session_4.Controllers
             return View(product);
         } public IActionResult viewBlog()
         {
-            return View(blogs);
-        }public IActionResult DeleteBlog(int?id)
+            var blog = _db.blogs.Include(p => p.blogType).ToList();
+
+            return View(blog);
+        }
+        public IActionResult DeleteBlog(int?id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var b = blogs.FirstOrDefault(b => b.Id == id);
+            var b = _db.blogs.Include(x=>x.blogType).ToList().FirstOrDefault(b => b.Id == id);
             if (b == null)
             {
                 return NotFound();   
@@ -61,8 +62,9 @@ namespace session_4.Controllers
         [HttpPost ]
         public IActionResult DeleteBlog(Blog blog)
         {
-            Blog blog2 = blogs.FirstOrDefault(b => b.Id == blog.Id);
-            blogs.Remove(blog2);
+            
+            _db.blogs.Remove(blog);
+            _db.SaveChanges();
             return RedirectToAction("viewBlog");
         }public IActionResult DeleteProduct(int?id)
         {
@@ -82,7 +84,7 @@ namespace session_4.Controllers
             {
                 return NotFound();
             }
-            var b = blogs.FirstOrDefault(b => b.Id == id);
+            var b = _db.blogs.Include(x => x.blogType).ToList().FirstOrDefault(b => b.Id == id);
             if (b == null)
             {
                 return NotFound();   
@@ -92,22 +94,12 @@ namespace session_4.Controllers
         [HttpPost]
         public IActionResult EditBlog(Blog blog)
         {
-            Blog blog2 = blogs.FirstOrDefault(b => b.Id == blog.Id);
-            blog2.Name=blog.Name;
-            blog2.Description=blog.Description;
-            if (blog.blogType.Id == 1)
+            if (blog.blogType.Id != 0)
             {
-                blog.blogType.Name = "Comedy";
+                blog.blogType = _db.types.FirstOrDefault(b => b.Id == blog.blogType.Id);
             }
-            else if (blog.blogType.Id == 2)
-            {
-                blog.blogType.Name = "Romantic";
-            }
-            else
-            {
-                blog.blogType.Name = "Action";
-            }
-            blog2.blogType=blog.blogType;
+            _db.blogs.Update(blog);
+            _db.SaveChanges();
             return RedirectToAction("viewBlog");
         }public IActionResult EditProduct(int?id)
         {
@@ -134,27 +126,12 @@ namespace session_4.Controllers
         [HttpPost]
         public IActionResult AddBlog(Blog blog)
         {
-            int max = 0;
-            blogs.ForEach(b =>
+            if (blog.blogType.Id != 0)
             {
-                if (b.Id > max)
-                {
-                    max = b.Id;
-                }
-            });
-            blog.Id = max+1;
-            if (blog.blogType.Id == 1)
-            {
-                blog.blogType.Name = "Comedy";
-            }else if (blog.blogType.Id == 2)
-            {
-                blog.blogType.Name = "Romantic";
+                blog.blogType = _db.types.FirstOrDefault(b => b.Id == blog.blogType.Id);
             }
-            else
-            {
-                blog.blogType.Name = "Action";
-            }
-            blogs.Add(blog);
+            _db.blogs.Add(blog);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     
