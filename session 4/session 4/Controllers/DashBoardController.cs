@@ -23,10 +23,10 @@ namespace session_4.Controllers
         public IActionResult CreateProduct(Product product)
         {
             
-                if(product.CompId == 1)
+                if(product.company.Id == 1)
                 {
                     product.company = _db.companies.FirstOrDefault(p=>p.Id==1);
-                }else if(product.CompId == 2)
+                }else if(product.company.Id == 2)
                 {
                     product.company = _db.companies.FirstOrDefault(p=>p.Id==2);
                 }
