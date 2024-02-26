@@ -16,27 +16,28 @@ namespace session_4.Controllers
         }
         public IActionResult Index()
         {
-            return View("");
+            return View();
         }
         public IActionResult CreateProduct()
         {
-            ProductViewModel m = new ProductViewModel();
-            m.companies=_db.companies.ToList();
-            return View(m);
+            ProductViewModel model = new ProductViewModel();
+            model.companies = _db.companies.ToList();
+            return View(model);
         }
         [HttpPost]
-        public IActionResult CreateProduct(ProductViewModel product)
+        public IActionResult CreateProduct(Product product)
         {
-            
             if (!ModelState.IsValid)
             {
-                product.companies = _db.companies.ToList();
-                return View(product.product);
+                ProductViewModel model = new ProductViewModel();
+                model.product = product;
+                model.companies = _db.companies.ToList();
+                return View(model);
             }
-            product.product.company = _db.companies.Include(p=>p.Name).FirstOrDefault(p => p.Id == product.product.CompId);
-            _db.products.Add(product.product);
+            product.company = _db.companies.FirstOrDefault(p => p.Id == product.CompId);
+            _db.products.Add(product);
             _db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("viewproduct");
         }
          public IActionResult viewproduct()
         {
@@ -81,58 +82,75 @@ namespace session_4.Controllers
             _db.products.Remove(product);
             _db.SaveChanges();
             return RedirectToAction("viewProduct");
-        }public IActionResult EditBlog(int?id)
+        }public IActionResult EditBlog(int? id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
+
+            BlogViewModel model = new BlogViewModel();
+            model.types = _db.types.ToList();
+
             var b = _db.blogs.Include(x => x.blogType).ToList().FirstOrDefault(b => b.Id == id);
-            if (b == null)
-            {
-                return NotFound();   
-            }
-            return View(b);
+            model.blog = b;
+            return View(model);
         }
+            
+            
         [HttpPost]
-        public IActionResult EditBlog(Blog blog)
+        public IActionResult EditBlog(BlogViewModel model)
         {
-            if (blog.blogType.Id != 0)
+            if (!ModelState.IsValid)
             {
-                blog.blogType = _db.types.FirstOrDefault(b => b.Id == blog.blogType.Id);
+                
+                return View(model);
             }
-            _db.blogs.Update(blog);
+
+            model.blog.blogType = _db.types.FirstOrDefault(b => b.Id == model.blog.typeId);
+            _db.Update(model.blog);
             _db.SaveChanges();
             return RedirectToAction("viewBlog");
         }public IActionResult EditProduct(int?id)
         {
-
+            ProductViewModel model = new ProductViewModel();
+            model.companies = _db.companies.ToList();
+           
             var b = _db.products.Include(p=>p.company).FirstOrDefault(p=>p.Id==id);
-            
-            return View(b);
+            model.product = b;
+            return View(model);
         }
         [HttpPost]
         public IActionResult EditProduct(Product product)
         {
             if (!ModelState.IsValid)
             {
-                return View(product);
+                ProductViewModel model = new ProductViewModel();
+                model.product = product;
+                model.companies = _db.companies.ToList();
+                return View(model);
             }
+        
             product.company = _db.companies.FirstOrDefault(p => p.Id == product.CompId);
-            _db.Update(product);
+            _db.products.Update(product);
             _db.SaveChanges();
             return RedirectToAction("viewProduct");
         }public IActionResult AddBlog()
         {
-            return View();
+            BlogViewModel model = new BlogViewModel();
+            model.types = _db.types.ToList();
+            return View(model);
+            
         }
         [HttpPost]
         public IActionResult AddBlog(Blog blog)
         {
-            if (blog.blogType.Id != 0)
+
+            if (!ModelState.IsValid)
             {
-                blog.blogType = _db.types.FirstOrDefault(b => b.Id == blog.blogType.Id);
+                BlogViewModel model = new BlogViewModel();
+                model.blog = blog;
+                model.types = _db.types.ToList();
+                return View(model);
             }
+            blog.blogType = _db.types.FirstOrDefault(b => b.Id == blog.typeId);
+            
             _db.blogs.Add(blog);
             _db.SaveChanges();
             return RedirectToAction("Index");

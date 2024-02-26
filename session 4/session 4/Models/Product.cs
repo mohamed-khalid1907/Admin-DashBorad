@@ -9,7 +9,7 @@ public class Product
     public int Id { get; set; }
 
     [Required(ErrorMessage = "not valid name")]
-    [Length(1, 5)]
+    [Length(1, 50)]
     [DeniedValues("AAA", "VVV")]
     [RegularExpression(@"^[a-zA-Z' ''-'\s]{1,40}$",
         ErrorMessage ="Characters are not allowed.")]

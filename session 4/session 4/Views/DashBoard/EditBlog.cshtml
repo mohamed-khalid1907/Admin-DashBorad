@@ -1,4 +1,4 @@
-﻿@model Blog;
+﻿@model session_4.ViewModel.BlogViewModel;
 
 @{
 
@@ -12,29 +12,38 @@
     <div>
         <form asp-action="EditBlog" method="post" class="row">
             <div class="mb-3">
-                <input asp-for="Id" hidden />
-                <label asp-for="Name" class="form-label">Blog Name</label>
-                <input asp-for="Name"
+                <input asp-for="@Model.blog.Id" hidden />
+                <label asp-for="@Model.blog.Name" class="form-label">Blog Name</label>
+                <input asp-for="@Model.blog.Name"
                        class="form-control"
                        placeholder="" />
+                <span asp-validation-for="@Model.blog.Name" class="text-danger"></span>
+
 
             </div>
             <div class="mb-3">
-                <label asp-for="Description" class="form-label">Product Description</label>
-                <textarea asp-for="Description"
+                <label asp-for="@Model.blog.Description" class="form-label">Blog Description</label>
+                <textarea asp-for="@Model.blog.Description"
                           class="form-control"
                           placeholder=""></textarea>
+                <span asp-validation-for="@Model.blog.Description" class="text-danger"></span>
+
             </div>
             <div class="mb-3 col-lg-6">
-                <label asp-for="blogType.Id" class="form-label">company</label>
+                <label asp-for="@Model.blog.typeId" class="form-label">Blog Type</label>
                 <select class="form-select "
-                        asp-for="blogType.Id"
-                       >
+                        asp-for="@Model.blog.typeId">
                     <option selected>Select one</option>
-                    <option value="1">Comedy</option>
-                    <option value="2">Romantic</option>
-                    <option value="3">Action</option>
+                    @{
+                        foreach (var x in Model.types)
+                        {
+
+                            <option value="@x.Id">@x.Name</option>
+                        }
+
+                    }
                 </select>
+                <span asp-validation-for="@Model.blog.typeId" class="text-danger"></span>
             </div>
 
             <div class="mb-3 col-lg-6">
