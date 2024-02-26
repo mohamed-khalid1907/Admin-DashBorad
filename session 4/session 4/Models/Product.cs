@@ -1,28 +1,36 @@
 ﻿using session_4.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-
+using session_4.Util;
 public class Product
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "not valid name")]
+    [Length(1, 5)]
+    [DeniedValues("AAA", "VVV")]
+    [RegularExpression(@"^[a-zA-Z' ''-'\s]{1,40}$",
+        ErrorMessage ="Characters are not allowed.")]
+
     public string Name { get; set; }
 
     public string Description { get; set; }
 
     [Required]
+    [Range(100,10000
+        , ErrorMessage ="not in the range.")]
+    [MaxPriceForCompanyAtrribute(10000)]
     public int Price { get; set; }
 
     [Required]
     public int Quantity { get; set; }
 
     public bool EnableSize { get; set; }
-
     [Required]
     public int CompId { get; set; }
 
     [ForeignKey("CompId")] // Corrected ForeignKey attribute
-    public Company company { get; set; }
+    public Company? company { get; set; }
 }

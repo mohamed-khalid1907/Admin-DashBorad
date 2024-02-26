@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using session_4.Data;
 using session_4.Models;
+using session_4.ViewModel;
 namespace session_4.Controllers
 {
     public class DashBoardController : Controller
     {
+        readonly ProductViewModel model = new ProductViewModel();
         private readonly ApplicationDbContext _db;
         public DashBoardController(ApplicationDbContext db)
         {
@@ -13,25 +16,25 @@ namespace session_4.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View("");
         }
         public IActionResult CreateProduct()
         {
-            return View();
+            ProductViewModel m = new ProductViewModel();
+            m.companies=_db.companies.ToList();
+            return View(m);
         }
         [HttpPost]
-        public IActionResult CreateProduct(Product product)
+        public IActionResult CreateProduct(ProductViewModel product)
         {
             
-                if(product.company.Id == 1)
-                {
-                    product.company = _db.companies.FirstOrDefault(p=>p.Id==1);
-                }else if(product.company.Id == 2)
-                {
-                    product.company = _db.companies.FirstOrDefault(p=>p.Id==2);
-                }
-            
-            _db.products.Add(product);
+            if (!ModelState.IsValid)
+            {
+                product.companies = _db.companies.ToList();
+                return View(product.product);
+            }
+            product.product.company = _db.companies.Include(p=>p.Name).FirstOrDefault(p => p.Id == product.product.CompId);
+            _db.products.Add(product.product);
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -103,6 +106,7 @@ namespace session_4.Controllers
             return RedirectToAction("viewBlog");
         }public IActionResult EditProduct(int?id)
         {
+
             var b = _db.products.Include(p=>p.company).FirstOrDefault(p=>p.Id==id);
             
             return View(b);
@@ -110,12 +114,11 @@ namespace session_4.Controllers
         [HttpPost]
         public IActionResult EditProduct(Product product)
         {
-            
-            if (product.company.Id == 1 || product.company.Id == 2)
+            if (!ModelState.IsValid)
             {
-                product.company = _db.companies.FirstOrDefault(p => p.Id == product.company.Id);
+                return View(product);
             }
-            
+            product.company = _db.companies.FirstOrDefault(p => p.Id == product.CompId);
             _db.Update(product);
             _db.SaveChanges();
             return RedirectToAction("viewProduct");
