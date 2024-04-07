@@ -10,6 +10,7 @@
 
     <div>
         <form asp-action="EditProduct" method="post" class="row">
+            <input asp-for="@Model.product.Id" hidden />
             <div class="mb-3">
                 <label asp-for="@Model.product.Name" class="form-label">Product Name</label>
                 <input asp-for="@Model.product.Name"

@@ -10,6 +10,7 @@
 
     <div>
         <form asp-action="DeleteProduct" method="post" class="row">
+            <input asp-for="Id" hidden />
             <div class="mb-3">
                 <label asp-for="Name" class="form-label">Product Name</label>
                 <input asp-for="Name"

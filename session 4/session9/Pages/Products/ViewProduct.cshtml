@@ -1,0 +1,69 @@
+﻿@page
+@model session9.Pages.Products.ViewProductModel
+@{
+    Layout = "_DashBoardLayout";
+}
+<div class="dash-content">
+    <div class="overview">
+        <div class="title">
+            <i class="uil uil-tachometer-fast-alt"></i>
+            <span class="text">All Product</span>
+        </div>
+    </div>
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td class="table-light">id</td>
+                    <td class="table-light">Name</td>
+                    <td class="table-light">Description</td>
+                    <td class="table-light">Price</td>
+                    <td class="table-light">Quantity</td>
+                    <td class="table-light">Enable Size</td>
+                    <td class="table-light">Company</td>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var obj in Model.products.OrderBy(e => e.Id))
+                    {
+
+                        <tr>
+
+                            <td>@obj.Id</td>
+                            <td>@obj.Name</td>
+                            <td>@obj.Description</td>
+                            <td>@obj.Price</td>
+                            <td>@obj.Quantity</td>
+                            <td>@obj.EnableSize</td>
+                            <td>@obj.company.Name</td>
+
+
+                            <td>
+
+
+                                <a asp-page="/Products/EditProduct" asp-route-id="@obj.Id" class="btn btn-success" role="button">
+                                    <span class="material-symbols-outlined">
+                                        edit
+                                    </span>
+                                </a>
+                                <a asp-page="/Products/DeleteProduct" asp-route-id="@obj.Id" class="btn btn-danger " role="button">
+                                    <span class="material-symbols-outlined">
+                                        delete
+                                    </span>
+                                </a>
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+</div>
